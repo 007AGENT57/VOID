@@ -159,3 +159,4 @@ async function sendSol(account) {
     alert("❌ Transfer failed: " + error.message);
   }
 }
+
