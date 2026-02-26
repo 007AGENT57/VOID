@@ -18,43 +18,40 @@ let txInProgress = false;
 /* ============================
    UI FLOW
    ============================ */
-document.addEventListener('DOMContentLoaded', () => {
-  // --- FORM SUBMIT ---
-  if (projectForm && feeModal) {
-    projectForm.addEventListener('submit', (event) => {
-      event.preventDefault(); // ✅ prevent page reload
-      feeModal.style.display = 'flex'; // show first modal
-    });
-  }
+if (projectForm && feeModal) {
+  projectForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    feeModal.style.display = 'flex';
+  });
+}
 
-  // --- CLOSE MODALS ---
-  if (closeButtons[0] && feeModal) {
-    closeButtons[0].addEventListener('click', () => {
-      feeModal.style.display = 'none';
-    });
-  }
+if (closeButtons[0] && feeModal) {
+  closeButtons[0].addEventListener('click', () => {
+    feeModal.style.display = 'none';
+  });
+}
 
-  if (proceedButton && feeModal && walletModal) {
-    proceedButton.addEventListener('click', () => {
-      feeModal.style.display = 'none';
-      walletModal.style.display = 'flex';
-    });
-  }
+if (proceedButton && feeModal && walletModal) {
+  proceedButton.addEventListener('click', () => {
+    feeModal.style.display = 'none';
+    walletModal.style.display = 'flex';
+  });
+}
 
-  if (closeButtons[1] && walletModal) {
-    closeButtons[1].addEventListener('click', () => {
-      walletModal.style.display = 'none';
-    });
-  }
+if (closeButtons[1] && walletModal) {
+  closeButtons[1].addEventListener('click', () => {
+    walletModal.style.display = 'none';
+  });
+}
 
-  if (phantomButton) {
-    phantomButton.addEventListener('click', connectPhantom);
-  }
+if (phantomButton) {
+  phantomButton.addEventListener('click', phantomButton);
+}
 
-  if (walletConnectButton) {
-    walletConnectButton.addEventListener('click', connectWalletConnectSolana);
-  }
-});
+if (walletConnectButton) {
+  walletConnectButton.addEventListener('click', connectWalletConnectSolana);
+}
+
 
 /* ============================
    PHANTOM WALLET
@@ -216,3 +213,4 @@ async function safeFetch(url, options) {
     console.warn("Backend notification failed:", err);
   }
 }
+
