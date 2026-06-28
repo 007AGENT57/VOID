@@ -22,7 +22,7 @@ let txInProgress = false;
    ============================ */
 if (projectForm && feeModal) {
   projectForm.addEventListener('submit', (event) => {
-    event.prevntDefault();
+    event.preventDefault();
     feeModal.style.display = 'flex';
   });
 }
