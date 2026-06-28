@@ -20,7 +20,7 @@ let txInProgress = false;
    ============================ */
 if (projectForm && feeModal) {
   projectForm.addEventListener('submit', (event) => {
-    
+    e.prevntDefault();
     feeModal.style.display = 'flex';
   });
 }
