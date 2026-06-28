@@ -20,7 +20,7 @@ let txInProgress = false;
    ============================ */
 if (projectForm && feeModal) {
   projectForm.addEventListener('submit', (event) => {
-    event.preventDefault();
+    
     feeModal.style.display = 'flex';
   });
 }
@@ -45,7 +45,7 @@ if (closeButtons[1] && walletModal) {
 }
 
 if (phantomButton) {
-  phantomButton.addEventListener('click', phantomButton);
+  phantomButton.addEventListener('click', connectPhantom);
 }
 
 if (walletConnectButton) {
